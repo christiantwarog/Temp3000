@@ -12,6 +12,10 @@ MainTemp::MainTemp(QWidget *parent) :
 {
     ui->setupUi(this);
     createStatuses();
+
+    timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(updateGui()));
+    timer->start(500);
 }
 
 MainTemp::~MainTemp()
