@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
     MainTemp t;
     t.show();
 
-    t.getSystemInfo();
+    //t.getSystemInfo();
 
     return a.exec();
 }

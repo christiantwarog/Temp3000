@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QVector>
+#include <QTimer>
 #include <iostream>
 #include "observer.h"
 
@@ -82,7 +83,7 @@ private:
     Ui::MainTemp *ui;
     QVector<Observer*> observers;
 
-    //GpuStatus *gpu;
+    QTimer* timer;
 
     //system info
     QString summary;
@@ -90,6 +91,10 @@ private:
     QString gpuTemp;
     QVector<QString> hddTemp;
     QString memoryTemp;
+
+public slots:
+    void updateGui() {getSystemInfo(); }
+
 };
 
 #endif // MAINTEMP_H
