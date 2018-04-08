@@ -17,5 +17,5 @@ MemoryStatus::~MemoryStatus()
 
 void MemoryStatus::update()
 {
-    setText(subject->getMemoryTemp());
+    setText(subject->getHddTemp());
 }

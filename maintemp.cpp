@@ -6,6 +6,12 @@
 #include <sensors/sensors.h>
 #include <string>
 
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+
 MainTemp::MainTemp(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainTemp)
@@ -38,16 +44,17 @@ void MainTemp::createStatuses()
     mem->move(10, 600);
 }
 
-void MainTemp::getSystemInfo()
+//Fetching and parsing device info
+void MainTemp::getChipInfo()
 {
     sensors_init(NULL);
     sensors_chip_name const * cn;
+
     int c = 0;
 
     summary = "Summary";
     cpuTemp.clear();
-    gpuTemp = "GPU";
-    hddTemp.clear();
+    //gpuTemp = "GPU";
     memoryTemp = "Memory\nRAM temp: ";
 
     while ((cn = sensors_get_detected_chips(0, &c)) != 0)
@@ -57,6 +64,7 @@ void MainTemp::getSystemInfo()
 
         while ((feat = sensors_get_features(cn, &f)) != 0)
         {
+            //std::cout << "Label: " << sensors_get_label(cn,feat) << "\n\n\n";
             std::cout << f << ": " << feat->number << std::endl;
 
             sensors_subfeature const *subf;
@@ -93,12 +101,7 @@ void MainTemp::getSystemInfo()
                                 summary += QString::number(val) + " °C";
                             }
                         }
-                        else if (c == GPU && subf->number < GPU_NUM)
-                        {
-                            gpuTemp += GPU_STRINGS[subf->number];
-                            gpuTemp += QString::number(val) + " °C";
-                        }
-                        else if (c == CPU && feat->number > 0)
+                        else if (strcmp(cn->prefix,"coretemp") == 0)
                         {
                             QString temp;
                             temp += "\nCore " + QString::number(feat->number)
@@ -117,5 +120,55 @@ void MainTemp::getSystemInfo()
     ui->summary->setText(summary);
 
     sensors_cleanup();
+}
+
+void MainTemp::getDiskInfo()
+{
+    int sockfd, output_length = 0;
+    ssize_t n = 1;
+    struct sockaddr_in address;
+    char* buffer, *pc;
+    hddTemp = "Drives\n";
+
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (sockfd == -1)
+    {
+        //log error
+        //return NULL;
+    }
+
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = inet_addr("127.0.0.1");
+    address.sin_port = htons(7634);
+
+    buffer = NULL;
+
+    if(::connect(sockfd, (struct sockaddr*)&address,
+               (socklen_t) sizeof(address))== -1)
+    {
+        //error
+    }
+    else
+    {
+        buffer = (char*)malloc(4048);
+        pc = buffer;
+
+        while ((n = read(sockfd, pc, 4048 - output_length)) > 0)
+        {
+            output_length += n;
+            pc = &pc[n];
+        }
+        buffer[output_length] = '\0';
+    }
+    ::close(sockfd);
+
+    hddTemp += buffer;
+}
+
+//Slots
+void MainTemp::updateGui()
+{
+    getChipInfo();
+    getDiskInfo();
     notify();
 }

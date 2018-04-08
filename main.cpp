@@ -1,6 +1,7 @@
 #include "maintemp.h"
 #include <QApplication>
 #include <QThread>
+#include <QDebug>
 
 int main(int argc, char *argv[])
 {
@@ -8,7 +9,7 @@ int main(int argc, char *argv[])
     MainTemp t;
     t.show();
 
-    //t.getSystemInfo();
+    //syscall("sudo hddtemp /dev/sd[abcdefghi]");
 
     return a.exec();
 }
