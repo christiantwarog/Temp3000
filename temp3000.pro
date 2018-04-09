@@ -15,18 +15,15 @@ TEMPLATE = app
 SOURCES += main.cpp\
         maintemp.cpp \
     cpustatus.cpp \
-    gpustatus.cpp \
-    memorystatus.cpp
+    hddstatus.cpp
 
 HEADERS  += maintemp.h \
     observer.h \
     cpustatus.h \
-    gpustatus.h \
-    memorystatus.h
+    hddstatus.h
 
 FORMS    += maintemp.ui \
     cpustatus.ui \
-    gpustatus.ui \
-    memorystatus.ui
+    hddstatus.ui
 
 LIBS = /usr/include/sensors/sensors.h -lsensors
