@@ -17,7 +17,7 @@ CpuStatus::~CpuStatus()
 
 void CpuStatus::update()
 {
-    QString format = "CPU";
+    QString format = "\n\n";
     QVector<QString> data = subject->getCpuTemp();
     for (int i = 0; i < data.size(); i++)
     {

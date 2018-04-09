@@ -7,6 +7,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     MainTemp t;
+    t.setStyleSheet("QMainWindow {background: 'grey';}");
     t.show();
 
     //syscall("sudo hddtemp /dev/sd[abcdefghi]");
