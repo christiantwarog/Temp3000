@@ -3,8 +3,11 @@
 
 #include <QMainWindow>
 #include <QVector>
+#include <QTimer>
+#include <QString>
 #include <iostream>
 #include "observer.h"
+#include <QTcpSocket>
 
 enum {
     NONE,
@@ -13,12 +16,19 @@ enum {
     CPU
 };
 //Constants
+static const int UI_REFRESH_RATE = 500;
+static const char HDD_TEMP_ADDRESS[] = "127.0.0.1";
+static const int HDD_TEMP_PORT = 7634;
+static const int HDD_MESSAGE_SIZE = 4048;
 static const int SUMMARY_NUM = 4;
-static const int GPU_NUM = 4;
 static const int CPU_NUM = 4;
 
 static const int CPU_FAN_SLOT = 0;
 static const int RAM_SLOT = 3;
+
+static const char CPU_INFO[] = "cat /proc/cpuinfo | grep MHz";
+static const char CPU_MHZ_STRING[] = "\nCPU speed:";
+static const char CPU_MHZ[] = " MHz";
 
 static const QString SUMMARY_STRINGS[SUMMARY_NUM] =
 {
@@ -26,12 +36,6 @@ static const QString SUMMARY_STRINGS[SUMMARY_NUM] =
     "\nCPU: ",
     "\nAmbient: ",
     "\nRAM: "
-};
-
-static const QString GPU_STRINGS[GPU_NUM] =
-{
-    "\nGPU temp: ",
-    "\nGPU crit: "
 };
 
 static const QString CPU_STRINGS[CPU_NUM] =
@@ -50,16 +54,14 @@ class MainTemp : public QMainWindow
 {
     Q_OBJECT
 
-
-
 public:
     explicit MainTemp(QWidget *parent = 0);
-    void getSystemInfo();
+    void getChipInfo();
 
     void attach(Observer* obs)
     {
         observers.push_back(obs);
-        std::cout << "Attached\n";
+        qDebug() << "Attached";
     }
 
     void notify()
@@ -71,25 +73,28 @@ public:
     }
 
     QVector<QString> getCpuTemp() { return cpuTemp; }
-    QString getGpuTemp() { return gpuTemp; }
-    QVector<QString> getHddTemp() { return hddTemp; }
-    QString getMemoryTemp() { return memoryTemp; }
+    QString getHddTemp() { return hddTemp; }
 
     ~MainTemp();
 
 private:
     void createStatuses();
+    void getDiskInfo();
+    void log(QString message);
+
     Ui::MainTemp *ui;
     QVector<Observer*> observers;
 
-    //GpuStatus *gpu;
+    QTimer* timer;
 
     //system info
     QString summary;
     QVector<QString> cpuTemp;
-    QString gpuTemp;
-    QVector<QString> hddTemp;
-    QString memoryTemp;
+    QString hddTemp;
+
+public slots:
+    void updateGui();
+
 };
 
 #endif // MAINTEMP_H
