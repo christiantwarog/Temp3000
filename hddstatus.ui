@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>CpuStatus</class>
- <widget class="QTextBrowser" name="CpuStatus">
+ <class>HddStatus</class>
+ <widget class="QTextBrowser" name="HddStatus">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -16,9 +16,9 @@
      <colorrole role="Base">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
-        <red>255</red>
-        <green>255</green>
-        <blue>127</blue>
+        <red>205</red>
+        <green>205</green>
+        <blue>255</blue>
        </color>
       </brush>
      </colorrole>
@@ -27,9 +27,9 @@
      <colorrole role="Base">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
-        <red>255</red>
-        <green>255</green>
-        <blue>127</blue>
+        <red>205</red>
+        <green>205</green>
+        <blue>255</blue>
        </color>
       </brush>
      </colorrole>
@@ -55,9 +55,6 @@
   </property>
   <property name="frameShadow">
    <enum>QFrame::Raised</enum>
-  </property>
-  <property name="lineWrapMode">
-   <enum>QTextEdit::NoWrap</enum>
   </property>
   <widget class="QLabel" name="label">
    <property name="geometry">
@@ -87,7 +84,7 @@
     <number>1</number>
    </property>
    <property name="text">
-    <string>CPU</string>
+    <string>HDD</string>
    </property>
   </widget>
  </widget>
