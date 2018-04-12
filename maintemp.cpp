@@ -10,6 +10,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 MainTemp::MainTemp(QWidget *parent) :
     QMainWindow(parent),
@@ -55,6 +56,20 @@ void MainTemp::getChipInfo()
 
     summary = "\n\n";
     cpuTemp.clear();
+
+    char buf[1024];
+    FILE* cpuProc = popen(CPU_INFO, "r");
+    int s = fread(buf, 1, sizeof(buf)-1, cpuProc);
+    buf[s] = '\0';
+
+    char* cpuSpeed = strtok(buf, ":");
+    cpuSpeed = strtok(NULL, "\n");
+
+    summary += CPU_MHZ_STRING;
+    summary += cpuSpeed;
+    summary += CPU_MHZ;
+
+    pclose(cpuProc);
 
     qDebug() << "Fetching CPU and RAM data\n";
     while ((cn = sensors_get_detected_chips(0, &count)) != 0)
