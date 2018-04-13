@@ -1,8 +1,11 @@
 # Temp3000
 Temperature monitoring GUI using libsensors api.
 Start from cli using command: temp3000
+Note:
+When running sensors-detect, hit enter for every prompt.
+When configuring hddtemp, leave everything as default except for interval between checks (set to 1).
 
-#Installation
+## Setup
 Chips:
 sudo apt-get install lm-sensor
 sudo sensors-detect
@@ -11,13 +14,13 @@ HDDs:
 sudo apt-get install hddtemp
 sudo dpkg-reconfigure hddtemp
 (Leave everything default, interval between checks to user specification).
-service hddtemp restart/start
+service hddtemp restart
 
 CLI:
 nano ~/.bashrc
 alias temp3000='/home/<user>/temp3000-build/temp3000'
 
-#Deployment
+## Deployment
 linuxdeployqt:
 chmod a+x /home/<user>/Downloads/linuxdeployqt-continuous-x86_64.AppImage 
 export PATH=/home/<user>/Qt5.7.0/5.7/gcc_64/bin/:$PATH

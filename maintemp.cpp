@@ -2,15 +2,6 @@
 #include "ui_maintemp.h"
 #include "cpustatus.h"
 #include "hddstatus.h"
-#include <sensors/sensors.h>
-#include <string>
-
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-#include <fcntl.h>
 
 MainTemp::MainTemp(QWidget *parent) :
     QMainWindow(parent),
@@ -60,6 +51,10 @@ void MainTemp::getChipInfo()
     char buf[1024];
     FILE* cpuProc = popen(CPU_INFO, "r");
     int s = fread(buf, 1, sizeof(buf)-1, cpuProc);
+
+    if (s < 0)
+        qDebug() << "Could not read data from /proc/cpuinfo";
+
     buf[s] = '\0';
 
     char* cpuSpeed = strtok(buf, ":");
@@ -91,7 +86,7 @@ void MainTemp::getChipInfo()
                 {
                     int rc = sensors_get_value(cn, subf->number, &val);
                     if (rc < 0)
-                        log(QString::number(rc) + ": Error, sensor did not report value");
+                        qDebug() << (QString::number(rc) + ": Error, sensor did not report value");
                     else
                     {
                         if (count == SUMMARY && subf->number < SUMMARY_NUM)
@@ -106,7 +101,7 @@ void MainTemp::getChipInfo()
                         {
                             QString temp;
                             if (subf->number % CPU_NUM == 0)
-                                temp += "\nCore " + QString::number(sensorFeature->number);
+                                temp += CORE_STRINGS[sensorFeature->number];
 
                             temp += CPU_STRINGS[subf->number % CPU_NUM]
                                     + QString::number(val) + "°C";
@@ -143,7 +138,7 @@ void MainTemp::getDiskInfo()
     sock = socket(AF_INET, SOCK_STREAM, 0);
 
     if (sock == -1)
-        log("Socket could not be created.");
+        qDebug() << "Socket could not be created.";
     else
     {
         address.sin_family = AF_INET;
@@ -151,7 +146,7 @@ void MainTemp::getDiskInfo()
         address.sin_port = htons(HDD_TEMP_PORT);
 
         if(::connect(sock, (struct sockaddr*)&address, (socklen_t) sizeof(address))== -1)
-            log("Conection to Hddtemp daemon failed.");
+            qDebug() << "Conection to Hddtemp daemon failed.";
         else
         {
             buffer = (char*)malloc(HDD_MESSAGE_SIZE);
@@ -179,14 +174,5 @@ void MainTemp::updateGui()
     getChipInfo();
     getDiskInfo();
     notify();
-}
-
-/*
- * log adds a message to the log file specified in settings file
- */
-void MainTemp::log(QString message)
-{
-    //TODO: implement file locking to a log file
-    qDebug() << message;
 }
 
