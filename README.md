@@ -1,9 +1,7 @@
 # Temp3000
+
 Temperature monitoring GUI using libsensors api.
 Start from cli using command: temp3000
-Note:
-When running sensors-detect, hit enter for every prompt.
-When configuring hddtemp, leave everything as default except for interval between checks (set to 1).
 
 ## Setup
 Chips:
@@ -26,3 +24,6 @@ chmod a+x /home/<user>/Downloads/linuxdeployqt-continuous-x86_64.AppImage
 export PATH=/home/<user>/Qt5.7.0/5.7/gcc_64/bin/:$PATH
 /home/<user>/Downloads/linuxdeployqt-continuous-x86_64.AppImage /home/<user>/build-temp3000-Desktop_Qt_5_7_0_GCC_64bit-Debug/temp3000
 
+## Note
+When running sensors-detect, hit enter for every prompt.
+When configuring hddtemp, leave everything as default except for interval between checks (set to 1).
