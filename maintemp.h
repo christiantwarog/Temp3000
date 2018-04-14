@@ -8,6 +8,15 @@
 #include <iostream>
 #include "observer.h"
 #include <QTcpSocket>
+#include <sensors/sensors.h>
+#include <string>
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 enum {
     NONE,
@@ -22,12 +31,13 @@ static const int HDD_TEMP_PORT = 7634;
 static const int HDD_MESSAGE_SIZE = 4048;
 static const int SUMMARY_NUM = 4;
 static const int CPU_NUM = 4;
+static const int MAX_CORE_NUM = 12;
 
 static const int CPU_FAN_SLOT = 0;
 static const int RAM_SLOT = 3;
 
 static const char CPU_INFO[] = "cat /proc/cpuinfo | grep MHz";
-static const char CPU_MHZ_STRING[] = "\nCPU speed:";
+static const char CPU_MHZ_STRING[] = "\nCPU Speed:";
 static const char CPU_MHZ[] = " MHz";
 
 static const QString SUMMARY_STRINGS[SUMMARY_NUM] =
@@ -36,6 +46,23 @@ static const QString SUMMARY_STRINGS[SUMMARY_NUM] =
     "\nCPU: ",
     "\nAmbient: ",
     "\nRAM: "
+};
+
+static const QString CORE_STRINGS[MAX_CORE_NUM+1] =
+{
+    "\nCPU ",
+    "\nCore 1 ",
+    "\nCore 2 ",
+    "\nCore 3 ",
+    "\nCore 4 ",
+    "\nCore 5 ",
+    "\nCore 6 ",
+    "\nCore 7 ",
+    "\nCore 8 ",
+    "\nCore 9 ",
+    "\nCore 10 ",
+    "\nCore 11 ",
+    "\nCore 12 "
 };
 
 static const QString CPU_STRINGS[CPU_NUM] =
@@ -80,7 +107,6 @@ public:
 private:
     void createStatuses();
     void getDiskInfo();
-    void log(QString message);
 
     Ui::MainTemp *ui;
     QVector<Observer*> observers;
